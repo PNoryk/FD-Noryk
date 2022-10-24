@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.css";
 import { Component } from "react";
 import Shop from "./Shop";
+import { ShopOnHooks } from "./ShopOnHooks";
 
 export default class App extends Component {
   initialProducts = [
@@ -14,13 +15,14 @@ export default class App extends Component {
     {
       id: 2,
       name: "Male Boots",
-      count: 2,
+      count: 22,
       image: "https://m.media-amazon.com/images/I/91C1xjwCWNL._UX500_.jpg",
     },
   ];
   headings = ["id", "name", "count", "image", "actions"];
 
   render = () => (
-    <Shop products={this.initialProducts} headings={this.headings} />
+    // <Shop products={this.initialProducts} headings={this.headings} />
+    <ShopOnHooks products={this.initialProducts} headings={this.headings} />
   );
 }
