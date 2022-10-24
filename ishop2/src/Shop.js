@@ -1,43 +1,75 @@
-import "./Shop.css"
 import { Component } from "react";
+import Product from "./Product";
+import ConfirmModal from "./ConfirmModal";
 
 export default class Shop extends Component {
-  createHeadings = () => this.props.headings.map(heading => <th key={ heading }>{ heading }</th>)
+  state = {
+    selectedId: null,
+    showModal: false,
+    productToRemove: null,
+    products: [...this.props.products],
+  };
+  createHeadings = () =>
+    this.props.headings.map((heading) => <th key={heading}>{heading}</th>);
 
-  makeColumns = (row) => Object.entries(row).map((column, idx) => this.makeColumn(column, row.id))
+  createRows = () =>
+    this.state.products.map((row) => (
+      <Product
+        onClick={(selectedId) => this.setState({ selectedId })}
+        onRemoveProduct={this.removeProduct}
+        showModal={this.showModal}
+        key={row.id}
+        row={row}
+        selected={row.id === this.state.selectedId}
+      />
+    ));
 
-  makeColumn = ([ type, text ], rowId) =>
-    <td key={ `${ type }_${ rowId }` }>{ type === "image" ? <img src={ text } height={ 200 }/> : text }</td>
+  removeProduct = (id) => {
+    this.setState(({ products: previousProducts }) => {
+      let selected = previousProducts.find(
+        ({ id: productId }) => productId === id
+      );
+      let products;
 
-  createRows = () => this.props.products.map(row => {
-    let columns = this.makeColumns(row)
-    let actionColumn = (
-      <td key={ `action_${ row.id }` }>
-        <button type="button" className="btn btn-danger" onClick={ () => this.props.showModal(row.id) }>remove</button>
-      </td>
-    )
-    columns.push(actionColumn)
-    return (
-      <tr onClick={ () => this.props.handleSelect(row.id) }
-          className={ this.props.selected === row.id ? 'bg-success bg-opacity-25' : null }
-          key={ row.id }>{ columns }</tr>
-    )
-  });
+      if (!(selected.count - 1)) {
+        products = previousProducts.filter(
+          ({ id: productId }) => productId !== id
+        );
+      } else {
+        products = previousProducts.map((product) =>
+          product.id === id ? { ...product, count: product.count - 1 } : product
+        );
+      }
+      return { products, productToRemove: null, showModal: false };
+    });
+  };
 
-  render = () => (
-    this.props.products.length ?
-      <table className="table">
-        <thead>
-        <tr>
-          { this.createHeadings() }
-        </tr>
-        </thead>
-        {
-          <tbody>
-          { this.createRows() }
-          </tbody>
-        }
-      </table>
-      : null
-  )
+  showModal = (id) => {
+    this.setState(({ products: previousProducts }) => {
+      let selected = previousProducts.find(
+        ({ id: productId }) => productId === id
+      );
+      return { productToRemove: selected, showModal: true };
+    });
+  };
+  render = () =>
+    this.props.products.length ? (
+      <>
+        <table className="table">
+          <thead>
+            <tr>{this.createHeadings()}</tr>
+          </thead>
+          <tbody>{this.createRows()}</tbody>
+        </table>
+        <ConfirmModal
+          show={this.state.showModal}
+          onClose={() =>
+            this.setState({ productToRemove: null, showModal: false })
+          }
+          onConfirm={() => this.removeProduct(this.state.productToRemove.id)}
+        >
+          <p>Would you like to remove {this.state.productToRemove?.name}</p>
+        </ConfirmModal>
+      </>
+    ) : null;
 }
