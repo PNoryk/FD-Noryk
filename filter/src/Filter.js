@@ -2,25 +2,17 @@ import './Filter.css'
 import { Component } from "react";
 
 export default class Filter extends Component {
-  constructor(props) {
-    super();
-    this.state = {
-      defaultList: [ ...props.list ],
-      input: "",
-      isChecked: false,
-      list: [ ...props.list ],
-    }
+  state = {
+    input: "",
+    isChecked: false,
+    list: [ ...this.props.list ],
   }
 
-  setDefault = () => {
-    this.setState(({ defaultList }) =>
-      ({
-        list: defaultList,
-        input: "",
-        isChecked: false,
-      }),
-    )
-  }
+  setDefault = () => this.setState({
+    list: this.props.list,
+    input: "",
+    isChecked: false,
+  })
   // 1
   // separate handlers were removed coz of processing extra data (checkbox in input handler and vice versa)
 
@@ -61,23 +53,20 @@ export default class Filter extends Component {
 
   // 4th solution – separate setting controls state and processing list
   updateInput = (input) => {
-    this.setState({ input })
-    this.updateList()
+    this.setState({ input }, this.updateList)
   }
 
   updateCheckbox = (isChecked) => {
-    this.setState({ isChecked })
-    this.updateList()
+    this.setState({ isChecked }, this.updateList)
   }
 
   updateList = () => {
-    this.setState(({ input, isChecked, defaultList }) => {
-      let list = input ? defaultList.filter(el => el.includes(input)) : [ ...defaultList ]
-      if (isChecked) {
-        list.sort()
-      }
-      return { list }
-    })
+    const { input, isChecked } = this.state;
+    let list = input ? this.props.list.filter(el => el.includes(input)) : [ ...this.props.list ]
+    if (isChecked) {
+      list.sort()
+    }
+    this.setState({ list })
   }
 
   render() {
@@ -86,8 +75,8 @@ export default class Filter extends Component {
       <div className="Filter">
         <p>
           <input type="checkbox" checked={ this.state.isChecked }
-                 onChange={ ({ target: { checked } }) => this.updateCheckbox(checked) }/>
-          <input type="text" value={this.state.input} onChange={ ({ target: { value } }) => this.updateInput(value) }/>
+                 onChange={ (e) => this.updateCheckbox(e.target.checked) }/>
+          <input type="text" value={ this.state.input } onChange={ (e) => this.updateInput(e.target.value) }/>
           <button type="button" onClick={ this.setDefault }>clear</button>
         </p>
         <select multiple className="Select">
@@ -96,5 +85,4 @@ export default class Filter extends Component {
       </div>
     )
   }
-
 }
