@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import Filter from './Filter';
+import { FilterBasedOnHooks } from './FilterBasedOnHooks';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -10,6 +11,8 @@ const list = [ 'california', 'everything', 'aboveboard', 'washington', 'basketba
 root.render(
   <React.StrictMode>
     <Filter list={list} />
+    <br/>
+    <FilterBasedOnHooks list={list} />
   </React.StrictMode>,
 );
 
