@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "name": "Boots",
+    "price": 45.0,
+    "image": "https://img.mytheresa.com/1088/1088/66/jpeg/catalog/product/ef/P00412272.jpg",
+    "count": 1
+  },
+  {
+    "id": 2,
+    "name": "Male Boots",
+    "price": 40.0,
+    "image": "https://m.media-amazon.com/images/I/91C1xjwCWNL._UX500_.jpg",
+    "count": 22
+  }
+]
