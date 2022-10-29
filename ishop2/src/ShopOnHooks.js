@@ -54,10 +54,9 @@ export const ShopOnHooks = ({ products: initialProducts, headings }) => {
     let value = +removeCountRef.current.value;
     if (value < 1 || value > productToRemove.count) {
       setHasError(true);
-      console.log("errors");
       return;
     }
-    removeProducts(productToRemove, value);
+    removeProducts(value);
   };
 
   return products.length ? (
