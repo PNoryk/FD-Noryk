@@ -1,4 +1,10 @@
-export const Product = ({ product, children, onClick, selected, headings }) => {
+export const Product = ({
+  product,
+  children,
+  onClickCapture,
+  selected,
+  headings,
+}) => {
   let columns = Object.keys(headings).map((name) => {
     let text = product[name];
     return (
@@ -16,7 +22,7 @@ export const Product = ({ product, children, onClick, selected, headings }) => {
   columns.push(<td key={`${product.id}_action`}>{children}</td>);
   return (
     <tr
-      onClick={onClick}
+      onClickCapture={onClickCapture}
       className={selected ? "bg-success bg-opacity-25" : null}
     >
       {columns}
