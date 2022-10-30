@@ -27,9 +27,7 @@ export const Shop = ({ products: initialProducts, headings }) => {
   let createRows = () =>
     products.map((product) => (
       <Product
-        onClick={ (selectedId) =>
-          !isProductFormOpened && setSelectedId(selectedId)
-        }
+        onClick={ () => !isProductFormOpened && setSelectedId(product.id) }
         key={ product.id }
         product={ product }
         headings={ headings }
