@@ -123,10 +123,7 @@ export const Shop = ({ products: initialProducts, headings }) => {
       ) }
       { selectedProduct && showModal && (
         <ConfirmModal
-          onMounted={ () => {
-          } }
-          // onMounted={ () => {removeCountRef.current.focus();
-          //   console.log(removeCountRef.current);} }
+          onMounted={ () => removeCountRef.current.focus() }
           onClose={ () => {
             setShowModal(false);
             setCountToRemove(1);
@@ -144,6 +141,7 @@ export const Shop = ({ products: initialProducts, headings }) => {
               setCountToRemove(e.target.value);
               setHasError(false);
             } }
+            ref={ removeCountRef }
           />
           { hasError && (
             <div className="invalid-feedback">
