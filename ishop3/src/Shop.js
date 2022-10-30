@@ -90,7 +90,7 @@ export const Shop = ({ products: initialProducts, headings }) => {
   let onProductFormSave = (product) => {
     let isNew = !("id" in product);
     if (isNew) {
-      product.id = Math.max(products.map(({ id }) => id)) + 1;
+      product.id = Math.max(...products.map(({ id }) => id)) + 1;
       setProducts((prev) => [ ...prev, product ]);
     } else {
       setProducts((prev) =>
