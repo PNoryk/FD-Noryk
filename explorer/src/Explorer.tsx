@@ -1,15 +1,24 @@
-import { FilesViewer } from "./FilesViewer";
 import { Folder } from "./types";
-import {TreeViewer} from "./TreeViewer";
-import './Explorer.scss'
-import {useState} from "react";
+import "./Explorer.scss";
+import { Dispatch, SetStateAction, useState } from "react";
 
-export const Explorer = ({ data }: { data: Folder }) => {
-  let [lastSelected, setLastSelected] = useState<Folder | null>(null);
+export const Explorer = ({
+  data,
+  folderStrategy,
+  fileStrategy,
+}: {
+  data: Folder;
+  folderStrategy: (
+    root: Folder,
+    setLastSelected: Dispatch<SetStateAction<Folder | null>>
+  ) => JSX.Element | null;
+  fileStrategy: (root: Folder | null) => JSX.Element | null;
+}) => {
+  let [selected, setLastSelected] = useState<Folder | null>(null);
   return (
     <div className="Explorer">
-      <TreeViewer root={data} setLastSelected={setLastSelected} />
-      <FilesViewer folder={lastSelected} />
+      {folderStrategy(data, setLastSelected)}
+      {fileStrategy(selected)}
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React from "react";
 import { Explorer } from "./Explorer";
 import { Folder } from "./types";
+import { fileStrategy, folderStrategy } from "./strategies";
 
 let data: Folder = {
   name: "tree",
@@ -32,7 +33,13 @@ let data: Folder = {
 };
 
 function App() {
-  return <Explorer data={data} />;
+  return (
+    <Explorer
+      data={data}
+      folderStrategy={folderStrategy}
+      fileStrategy={fileStrategy}
+    />
+  );
 }
 
 export default App;

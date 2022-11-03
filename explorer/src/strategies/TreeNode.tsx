@@ -1,6 +1,8 @@
-import { ElementType, Folder } from "./types";
+import { ElementType, Folder } from "../types";
 import { Element } from "./Element";
 import { Dispatch, SetStateAction, useState } from "react";
+import { ReactComponent as ArrowToggle } from "../assets/icons/arrow-toggler.svg";
+import "./TreeNode.scss";
 
 export const TreeNode = ({
   root,
@@ -16,24 +18,19 @@ export const TreeNode = ({
     setLastSelected(!isVisible ? root : null);
   };
   return (
-    <div style={{ marginLeft: 25 }}>
-      <div onClick={expand} style={{ display: "flex", marginLeft: root.children.length ? '-16px' : 0 }}>
+    <div className="TreeNode">
+      <div
+        onClick={expand}
+        className={
+          "TreeNode__row" +
+          (root.children.length ? " TreeNode__row--with-toggle" : "")
+        }
+      >
         {root.children.length ? (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
+          <ArrowToggle
             width={16}
-            viewBox="0 0 16 16"
             style={!isVisible ? { transform: "rotate(-90deg)" } : {}}
-          >
-            <path
-              fill="none"
-              stroke="#343a40"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="m2 5 6 6 6-6"
-            />
-          </svg>
+          />
         ) : null}
         <Element
           type={ElementType.Folder}
@@ -43,7 +40,13 @@ export const TreeNode = ({
       </div>
       {isVisible &&
         (root.children.filter((el) => el.type === "FOLDER") as Folder[]).map(
-          (child) => <TreeNode root={child} setLastSelected={setLastSelected} />
+          (child, i) => (
+            <TreeNode
+              key={`${root.name}s_children_${i}`}
+              root={child}
+              setLastSelected={setLastSelected}
+            />
+          )
         )}
     </div>
   );
