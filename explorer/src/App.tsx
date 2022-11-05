@@ -8,6 +8,7 @@ let data: Folder = {
   type: "FOLDER",
   children: [
     { name: "folder1", type: "FOLDER", children: [] },
+    { name: "file1", type: "FILE" },
     {
       name: "folder2",
       type: "FOLDER",

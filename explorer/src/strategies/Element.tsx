@@ -1,24 +1,19 @@
-import { ReactComponent as File } from "../assets/icons/blank-file-outline-icon.svg";
-import { ReactComponent as Folder } from "../assets/icons/folder-desktop-icon.svg";
-import { ReactComponent as FolderWithFiles } from "../assets/icons/folder-directory-files-icon.svg";
-import { ElementType } from "../types";
-import { MouseEventHandler } from "react";
+import React from "react";
 
 export const Element = ({
   name,
-  type = ElementType.File,
-  hasFiles = false,
+  icon: Icon,
+  isIconFirst = true,
 }: {
   name: string;
-  type?: ElementType;
-  hasFiles?: boolean;
-  onClick?: MouseEventHandler;
+  icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+  isIconFirst?: boolean;
 }) => {
-  let Icon = type ? File : hasFiles ? FolderWithFiles : Folder;
   return (
     <>
-      <Icon width={20} />
+      {isIconFirst && <Icon width={20} />}
       {name}
+      {!isIconFirst && <Icon width={20} />}
     </>
   );
 };

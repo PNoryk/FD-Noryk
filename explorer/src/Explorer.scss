@@ -5,3 +5,23 @@
     flex-grow: 1;
   }
 }
+
+.Folder {
+  &__toggle-icon {
+    width: 16px;
+    transition: transform .3s;
+    transform: rotate(-90deg);
+
+    &--is-opened {
+      transform: rotate(0)
+    }
+  }
+}
+
+.TreeNode {
+  padding-left: 32px;
+
+  &:has(.Folder--with-toggle) {
+    margin-left: -16px;
+  }
+}
