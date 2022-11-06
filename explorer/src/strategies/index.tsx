@@ -1,4 +1,4 @@
-import { File, Folder, FolderStrategy as FolderStrategyType } from "../types";
+import { File, FolderStrategy as FolderStrategyType } from "../types";
 import React from "react";
 import { Element } from "./Element";
 
@@ -6,10 +6,14 @@ export const folderStrategy: FolderStrategyType = (
   el,
   folderIcon,
   isVisible: boolean,
+  onClick,
   ToggleIcon
 ) => {
   return (
-    <div className={"Folder" + (ToggleIcon ? " Folder--with-toggle" : "")}>
+    <div
+      className={"Folder" + (ToggleIcon ? " Folder--with-toggle" : "")}
+      onClick={onClick}
+    >
       {ToggleIcon ? (
         <ToggleIcon
           className={

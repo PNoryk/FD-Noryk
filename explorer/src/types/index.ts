@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MouseEventHandler } from "react";
 
 export type File = {
   name: string;
@@ -20,6 +20,7 @@ export type FolderStrategy = (
   el: Folder,
   folderIcon: React.FunctionComponent<React.SVGProps<SVGSVGElement>>,
   isVisible: boolean,
+  onClick: MouseEventHandler<HTMLDivElement>,
   toggleIcon?: React.FunctionComponent<React.SVGProps<SVGSVGElement>>
 ) => JSX.Element;
 
