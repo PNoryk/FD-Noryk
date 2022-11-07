@@ -1,0 +1,7 @@
+.TreeNode {
+  padding-left: 32px;
+
+  &:has(.Folder--with-toggle) {
+    margin-left: -16px;
+  }
+}
