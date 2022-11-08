@@ -1,11 +1,18 @@
 .Folder {
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: mix(cyan, #fff, 10%);
+  }
+
   &__toggle-icon {
     width: 16px;
-    transition: transform .3s;
+    transition: transform 0.3s;
     transform: rotate(-90deg);
 
     &--is-opened {
-      transform: rotate(0)
+      transform: rotate(0);
     }
   }
 }

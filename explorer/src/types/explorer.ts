@@ -3,24 +3,26 @@ import { MouseEventHandler } from "react";
 
 export enum ElementType {
   Folder = "FOLDER",
-  File = "File",
+  File = "FILE",
 }
 
 export interface File extends TreeNode {
   name: string;
+  type: "FILE";
 }
 
 export interface Folder extends TreeNode {
   name: string;
-  children: (File | Folder)[];
+  type: "FOLDER";
+  children?: (File | Folder)[];
 }
 
 export interface FolderStrategy extends TreeNodeStrategy {
   (
-    el: Folder,
+    el: Folder | File,
     onClick: MouseEventHandler<HTMLDivElement>,
     isOpened: boolean
-  ): JSX.Element;
+  ): JSX.Element | null;
 }
 
 export interface FileStrategy extends TreeNodeStrategy {}

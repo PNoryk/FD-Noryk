@@ -1,4 +1,4 @@
-import './Tree.scss'
+import "./Tree.scss";
 import { TreeNode, TreeNodeStrategy } from "../types";
 import React, { useState } from "react";
 
@@ -32,10 +32,14 @@ const InnerTree = ({
 
   return (
     <div className="TreeNode">
-      {!isArray && elementStrategy(element as TreeNode, onClick, isChildrenVisible)}
-      {(isArray ? (element as TreeNode[]) : (element as TreeNode).children).map(
+      {!isArray &&
+        elementStrategy(element as TreeNode, onClick, isChildrenVisible)}
+      {(isArray
+        ? (element as TreeNode[])
+        : (element as TreeNode).children || []
+      ).map(
         (el, index) =>
-          isChildrenVisible && (
+          (isArray || isChildrenVisible) && (
             <InnerTree
               element={el}
               elementStrategy={elementStrategy}

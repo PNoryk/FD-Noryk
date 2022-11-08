@@ -1,5 +1,11 @@
-import './explorer.scss'
-import { File, FileStrategy, Folder, FolderStrategy } from "../types/explorer";
+import "./explorer.scss";
+import {
+  ElementType,
+  File,
+  FileStrategy,
+  Folder,
+  FolderStrategy,
+} from "../types/explorer";
 import React, { MouseEventHandler } from "react";
 import { Element } from "../components/Element";
 import { ReactComponent as ToggleIcon } from "../assets/icons/arrow-toggler.svg";
@@ -7,19 +13,23 @@ import { ReactComponent as FileIcon } from "../assets/icons/blank-file-outline-i
 import { ReactComponent as FolderIcon } from "../assets/icons/folder-desktop-icon.svg";
 import { ReactComponent as FolderWithFilesIcon } from "../assets/icons/folder-directory-files-icon.svg";
 
-export const folderStrategy: FolderStrategy = (
-  el,
-  onClick,
-  isOpened,
-) => {
-  let hasFiles = !!el.children?.filter(el => !el.children || !el.children?.length).length;
+export const folderStrategy: FolderStrategy = (el, onClick, isOpened) => {
+  if ((el as File).type === "FILE") {
+    return null;
+  }
+  let hasFiles = !!(el as Folder).children?.filter(
+    (el) => el.type === ElementType.File
+  ).length;
   let folderIcon = hasFiles ? FolderWithFilesIcon : FolderIcon;
+  let hasFolders = !!(el as Folder).children?.filter(
+    (el) => el.type === ElementType.Folder
+  ).length;
   return (
     <div
-      className={"Folder" + (hasFiles ? " Folder--with-toggle" : "")}
+      className={"Folder" + (hasFolders ? " Folder--with-toggle" : "")}
       onClick={(onClick as MouseEventHandler) || ((e) => {})}
     >
-      {hasFiles ? (
+      {hasFolders ? (
         <ToggleIcon
           className={
             "Folder__toggle-icon" +
@@ -32,6 +42,7 @@ export const folderStrategy: FolderStrategy = (
   );
 };
 
-export const fileStrategy: FileStrategy = (el) => (
-  <Element name={(el as File).name} icon={FileIcon} />
-);
+export const fileStrategy: FileStrategy = (el) =>
+  (el as File).type === ElementType.File ? (
+    <Element name={(el as File).name} icon={FileIcon} />
+  ) : null;
