@@ -6,7 +6,7 @@ interface IProps {
   children: string;
   target: MutableRefObject<HTMLElement | null>;
   preferredPosition?: TooltipPosition;
-  timeout?: number;
+  leaveTimeout?: number;
 }
 
 const calculatePosition = (
@@ -72,28 +72,21 @@ export const Tooltip = ({
   children,
   target,
   preferredPosition = TooltipPosition.Top,
-  timeout = 1000,
+  leaveTimeout = 1000,
 }: IProps) => {
   let [show, setShow] = useState(false);
   let [styles, setStyles] = useState({});
   let [position, setPosition] = useState(preferredPosition);
   let tooltipRef = useRef<HTMLDivElement>(null);
 
-  let [timeoutId, setTimeoutId] = useState<
-    ReturnType<typeof setTimeout> | undefined
-  >(undefined);
+  let [isTimeoutSet, setIsTimeoutSet] = useState(false)
 
   const onMouseEnter = () => {
-    console.log("enter");
-    console.log(timeoutId);
-    clearTimeout(timeoutId);
+    setIsTimeoutSet(false);
   };
 
   const onMouseLeave = () => {
-    console.log("oldTimer", timeoutId);
-    let newTimer = setTimeout(() => setShow(false), timeout);
-    setTimeoutId(newTimer);
-    console.log("newTimer", newTimer);
+    setIsTimeoutSet(true)
   };
 
   useEffect(() => {
@@ -104,8 +97,18 @@ export const Tooltip = ({
       };
       target.current.onmouseleave = onMouseLeave;
     }
-    return () => clearTimeout(timeoutId);
   }, []);
+
+  useEffect(() => {
+    let timer : ReturnType<typeof setTimeout> | undefined = undefined;
+
+    if (isTimeoutSet) {
+      timer = setTimeout(() => setShow(false), leaveTimeout)
+    } else {
+      clearTimeout(timer);
+    }
+    return () => clearTimeout(timer)
+  }, [isTimeoutSet])
 
   useEffect(() => {
     if (show && tooltipRef.current && target.current) {
