@@ -1,8 +1,18 @@
 import { Tooltip } from "@/components/tooltip/Tooltip";
-import { useRef } from "react";
+import { forwardRef, useRef } from "react";
+import { withTooltip } from "@/components/tooltip/withTooltip";
 
 function App() {
   let tooltipRef = useRef(null);
+
+  let btn = <button onClick={() => alert("hello")}>ok</button>;
+
+  let MyWrappedComponent = forwardRef<HTMLButtonElement>((props, ref) => (
+    <button ref={ref}>hover button</button>
+  ));
+
+  let ButtonWithTooltip = withTooltip(btn, 2000)(MyWrappedComponent);
+
   return (
     <>
       <p>
@@ -20,6 +30,8 @@ function App() {
         hello
       </button>
       <Tooltip target={tooltipRef}>hello</Tooltip>
+
+      <ButtonWithTooltip />
     </>
   );
 }

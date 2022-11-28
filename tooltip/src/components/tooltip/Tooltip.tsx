@@ -1,9 +1,9 @@
-import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { MutableRefObject, ReactNode, useEffect, useRef, useState } from "react";
 import { Arrow, Inner, StyledTooltip } from "./styled";
 import { TooltipPosition } from "@/types";
 
-interface IProps {
-  children: string;
+export interface IProps {
+  children: ReactNode;
   target: MutableRefObject<HTMLElement | null>;
   preferredPosition?: TooltipPosition;
   leaveTimeout?: number;
