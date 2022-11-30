@@ -22,25 +22,35 @@ let data = [
 ];
 
 export class App extends Component {
-  constructor() {
-    super();
-    eventEmitter.on("select", (selected) => {
-      this.setState({ selected, showAddButton: false });
-    });
-
-    eventEmitter.on("save", this.saveChanges);
-    eventEmitter.on("remove", this.removeRow);
-    eventEmitter.on("remove", () => {
-      this.setState({ selected: {}, showAddButton: true });
-    });
-    eventEmitter.on("filter", this.filterRows);
-  }
-
   state = {
     data: data.map((el, index) => ({ ...el, id: index })),
     showAddButton: true,
     filter: "all",
     selected: {},
+  };
+
+  componentDidMount() {
+    eventEmitter.on("select", this.select);
+    eventEmitter.on("save", this.saveChanges);
+    eventEmitter.on("remove", this.removeRow);
+    eventEmitter.on("remove", this.remove);
+    eventEmitter.on("filter", this.filterRows);
+  }
+
+  componentWillUnmount() {
+    eventEmitter.off("select", this.select);
+    eventEmitter.off("save", this.saveChanges);
+    eventEmitter.off("remove", this.removeRow);
+    eventEmitter.off("remove", this.remove);
+    eventEmitter.off("filter", this.filterRows);
+  }
+
+  select = (selected) => {
+    this.setState({ selected, showAddButton: false });
+  };
+
+  remove = () => {
+    this.setState({ selected: {}, showAddButton: true });
   };
 
   getFilteredData = () => {
