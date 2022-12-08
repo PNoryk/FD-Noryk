@@ -1,0 +1,69 @@
+@import "@/sass/helpers";
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &__image {
+    height: px2rem(38px);
+  }
+
+  &__menu-button {
+    position: static;
+  }
+}
+
+.menu-button {
+  $parent: &;
+
+  display: flex;
+  flex-direction: column;
+  width: px2rem(56px);
+  height: px2rem(56px);
+  padding: 1rem;
+  background-color: var(--primary);
+  border: 0;
+  border-radius: px2rem(10px);
+
+  &__item {
+    display: block;
+    height: px2rem(3px);
+    margin: px2rem(3px) 0;
+    background: var(--white);
+    border-radius: px2rem(10px);
+    transition: 0.4s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+
+    &:nth-of-type(2) {
+      width: 50%;
+    }
+
+    &:nth-of-type(3) {
+      width: 100%;
+    }
+
+    &:nth-of-type(4) {
+      width: 75%;
+    }
+  }
+
+  &[aria-expanded="true"] {
+    #{$parent}__item {
+      &:nth-of-type(2) {
+        transform: rotateZ(45deg) translate(3px, 2px);
+        transform-origin: bottom;
+      }
+
+      &:nth-of-type(3) {
+        transform: rotateZ(-45deg);
+        transform-origin: center;
+      }
+
+      &:nth-of-type(4) {
+        width: 50%;
+        transform: translate(10px, -4px) rotateZ(45deg);
+        transform-origin: bottom;
+      }
+    }
+  }
+}
