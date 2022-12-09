@@ -1,7 +1,14 @@
+@use "sanitize.css";
+@use "sanitize.css/forms.css";
+@use "sanitize.css/assets.css";
+@use "sanitize.css/reduce-motion.css";
+
+@use "@/scss/font";
+
 :root {
-  color: rgb(255 255 255 / 87%);
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  background-color: #242424;
+  color: var(--white);
+  font-family: "Exo 2", Inter, Avenir, Helvetica, Arial, sans-serif;
+  background-color: var(--black);
   color-scheme: light dark;
   font-synthesis: none;
   text-rendering: optimizelegibility;
@@ -21,12 +28,13 @@
   --green: #00a340;
   --yellow: #f3a608;
   --orange: #f45d2d;
+  --border-radius: 0.625rem;
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #fff;
+    // color: var(--black);
+    background-color: var(--light);
   }
 }
 
@@ -42,6 +50,14 @@ body,
 
 button {
   cursor: pointer;
+}
+
+input {
+  font-weight: 500;
+
+  &::placeholder {
+    color: var(--secondary);
+  }
 }
 
 .visually-hidden,

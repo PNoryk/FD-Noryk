@@ -12,7 +12,7 @@ export const Layout = () => {
       <header className="header">
         <img className="header__image" src={logoPath} alt="Logo" />
         <button
-          className="menu-button"
+          className="header__menu-button menu-button"
           aria-expanded={isSidebarOpened}
           onClick={() => setIsSidebarOpened(!isSidebarOpened)}
         >
@@ -21,6 +21,7 @@ export const Layout = () => {
           <span className="menu-button__item"></span>
           <span className="menu-button__item"></span>
         </button>
+        <input className="header__search search" placeholder="Search" type="text"/>
       </header>
     </>
   );
