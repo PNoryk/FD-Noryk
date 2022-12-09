@@ -1,5 +1,32 @@
-@use "@/scss/helpers" as *;
+@use "@/scss/_functions.scss" as *;
 @use "include-media" as *;
+
+.container {
+  display: flex;
+  align-items: flex-start;
+  padding: 2rem 1.5rem 3rem;
+  overflow-x: hidden;
+
+  &__main {
+    flex: 1 0 0;
+    transition: margin-left 0.3s;
+
+    &--aside-opened {
+      margin-left: -196px;
+    }
+  }
+
+  &__sidebar {
+    flex-shrink: 0;
+    width: px2rem(196px);
+    margin-right: px2rem(-196px);
+    transition: margin-right 0.3s;
+
+    &--opened {
+      margin-right: 0;
+    }
+  }
+}
 
 .header {
   display: flex;
@@ -31,12 +58,28 @@
 }
 
 .search {
-  padding: 1rem 1rem 1rem 1.25rem;
-  font-size: 1rem;
-  line-height: 1.5;
-  background-color: var(--graphite);
-  border: 0;
-  border-radius: var(--border-radius);
+  position: relative;
+
+  &__button {
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    padding: 0.625rem;
+    font-size: 0;
+    border: 0;
+    border-radius: var(--border-radius);
+    transform: translateY(-50%);
+  }
+
+  &__input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 1.25rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    background-color: var(--graphite);
+    border: 0;
+    border-radius: var(--border-radius);
+  }
 }
 
 .menu-button {
@@ -89,6 +132,30 @@
         transform: translate(10px, -4px) rotateZ(45deg);
         transform-origin: bottom;
       }
+    }
+  }
+}
+
+.navbar {
+  padding: 1rem 3rem 3rem 1.5rem;
+
+  &__list {
+    display: grid;
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+    row-gap: px2rem(40px);
+  }
+
+  &__item {
+    display: inline-flex;
+    gap: 1.25rem;
+    align-items: center;
+    font-weight: 600;
+    font-size: px2rem(18px);
+
+    &::before {
+      content: none;
     }
   }
 }
