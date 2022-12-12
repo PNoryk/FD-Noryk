@@ -31,6 +31,14 @@
     margin-left: calc((100vw - var(--content-size)) / 2);
     padding-right: 0;
     padding-left: 0;
+
+    @include media("<1440px") {
+      &--sidebar-opened {
+        margin-left: calc(
+          (100vw - var(--content-size) + (-1 * var(--sidebar-width))) / 2
+        );
+      }
+    }
   }
 
   @include media(">=1440px") {
@@ -88,11 +96,15 @@
     }
   }
 
+  &__dropdown {
+    // flex-shrink: 0;
+  }
+
   &__menu-button {
     align-self: flex-end;
 
-    @include media(">=tablet") {
-      order: 2;
+    @include media(">=tablet", "<1440px") {
+      order: 1;
     }
   }
 
@@ -103,7 +115,6 @@
 
     @include media(">=tablet") {
       flex-grow: 1;
-      order: 1;
     }
   }
 }
@@ -133,17 +144,28 @@
   }
 }
 
-.menu-button {
-  $parent: &;
-
-  display: flex;
-  flex-direction: column;
-  width: px2rem(56px);
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: px2rem(56px);
   height: px2rem(56px);
-  padding: 1rem;
+  padding: 0;
   background-color: var(--primary);
   border: 0;
   border-radius: var(--border-radius);
+}
+
+.header-menu {
+  $parent: &;
+
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1rem;
+
+  @include media(">=1440px") {
+    display: none;
+  }
 
   &__item {
     display: block;
@@ -221,6 +243,72 @@
 
     &::before {
       content: none;
+    }
+  }
+}
+
+.dropdown {
+  $parent: &;
+
+  position: relative;
+  display: none;
+
+  @include media(">=1440px") {
+    display: block;
+  }
+
+  &__menu {
+    position: absolute;
+    display: none;
+    width: 100%;
+    margin-top: 24px;
+    margin-bottom: 0;
+    padding-left: 0;
+    list-style: none;
+    background-color: var(--dark);
+    border-radius: var(--border-radius);
+  }
+
+  &__menu-item {
+    padding: 1rem 1.25rem;
+    font-weight: 500;
+
+    & + & {
+      padding-top: px2rem(15px);
+      border-top: 1px solid var(--graphite);
+    }
+  }
+
+  &__button {
+    display: inline-flex;
+    gap: px2rem(20px);
+    align-items: center;
+    padding: 0;
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    border: 0;
+    border-radius: var(--border-radius);
+  }
+
+  &__button-text {
+    flex-grow: 1;
+  }
+
+  &__button-rect {
+    font-weight: 700;
+    font-size: px2rem(20px);
+  }
+
+  &__arrow {
+    width: 1.5rem;
+    height: 1.5rem;
+    stroke: white;
+  }
+
+  &--opened {
+    #{$parent}__menu {
+      display: block;
     }
   }
 }
