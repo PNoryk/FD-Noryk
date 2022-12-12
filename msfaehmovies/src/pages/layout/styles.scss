@@ -83,6 +83,16 @@
     gap: px2rem(32px);
   }
 
+  @include media(">=1440px") {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+  }
+
+  @include media(">=1920px") {
+    display: grid;
+    grid-template-columns: 4fr 1fr;
+  }
+
   &__image {
     height: px2rem(38px);
 
@@ -252,6 +262,8 @@
 
   position: relative;
   display: none;
+  min-width: 0;
+
 
   @include media(">=1440px") {
     display: block;
@@ -283,16 +295,18 @@
     display: inline-flex;
     gap: px2rem(20px);
     align-items: center;
+    width: 100%;
     padding: 0;
     font-weight: 600;
-    white-space: nowrap;
-    text-overflow: ellipsis;
     border: 0;
     border-radius: var(--border-radius);
   }
 
   &__button-text {
     flex-grow: 1;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   &__button-rect {
@@ -301,6 +315,7 @@
   }
 
   &__arrow {
+    flex-shrink: 0;
     width: 1.5rem;
     height: 1.5rem;
     stroke: white;

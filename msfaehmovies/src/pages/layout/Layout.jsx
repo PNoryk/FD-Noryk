@@ -55,6 +55,7 @@ export const Layout = () => {
               <button
                 type="button"
                 className="dropdown__button dropdown-button"
+                title="Константин Константинопольский"
                 onClick={() => setIsDropDownOpened(!isDropDownOpened)}
               >
                 <span className="dropdown__button-rect icon-button">KK</span>
