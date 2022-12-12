@@ -2,44 +2,66 @@
 @use "include-media" as *;
 
 .container {
-  display: flex;
-  align-items: flex-start;
+  --sidebar-width: #{px2rem(196px)};
+
+  display: grid;
+  grid-template-areas: "content sidebar";
+  grid-template-columns: 1fr 0;
   padding: 2rem 1.5rem 3rem;
-  overflow-x: hidden;
+  transition: margin-left 0.3s, grid-template-columns 0.3s;
 
-  &__main {
-    flex: 1 0 0;
-    transition: margin-left 0.3s;
-
-    &--aside-opened {
-      margin-left: -196px;
+  @include media("<1440px") {
+    &--sidebar-opened {
+      grid-template-columns: 1fr var(--sidebar-width);
+      margin-left: calc(-1 * var(--sidebar-width));
     }
   }
 
-  &__sidebar {
-    flex-shrink: 0;
-    width: px2rem(196px);
-    margin-right: px2rem(-196px);
-    transition: margin-right 0.3s;
+  @include media(">=1440px") {
+    --sidebar-width: #{px2rem(434px)};
 
-    &--opened {
-      margin-right: 0;
-    }
+    grid-template-areas: "sidebar content";
+    grid-template-columns: var(--sidebar-width) 1fr;
+  }
+
+  &__main {
+    grid-area: content;
+  }
+
+  &__sidebar {
+    grid-area: sidebar;
+    width: var(--sidebar-width);
   }
 }
 
 .header {
   display: flex;
   flex-wrap: wrap;
-  gap: px2rem(32px);
   align-items: center;
   justify-content: space-between;
+  column-gap: 0.5rem;
+  row-gap: px2rem(32px);
+
+  @include media(">=tablet") {
+    gap: px2rem(32px);
+  }
 
   &__image {
     height: px2rem(38px);
+
+    @include media("<tablet") {
+      // 100% - button width - gap width
+      max-width: calc(100% - 3.5rem - 0.5rem);
+    }
+
+    @include media(">=1440px") {
+      display: none;
+    }
   }
 
   &__menu-button {
+    align-self: flex-end;
+
     @include media(">=tablet") {
       order: 2;
     }
@@ -138,6 +160,20 @@
 
 .navbar {
   padding: 1rem 3rem 3rem 1.5rem;
+
+  @media (width >= 1440px) {
+    padding: 0.5rem px2rem(128px) px2rem(64px) px2rem(64px);
+  }
+
+  &__image {
+    display: none;
+    height: px2rem(38px);
+
+    @include media(">=1440px") {
+      display: block;
+      margin-bottom: px2rem(64px);
+    }
+  }
 
   &__list {
     display: grid;

@@ -15,41 +15,40 @@ export const Layout = () => {
 
   return (
     <>
-      <div className="container">
-        <header
-          className={classNames(
-            "container__main",
-            {
-              "container__main--aside-opened": isSidebarOpened,
-            },
-            "header"
-          )}
-        >
-          <img className="header__image" src={logoPath} alt="Logo" />
-          <button
-            type="button"
-            className="header__menu-button menu-button"
-            aria-expanded={isSidebarOpened}
-            onClick={() => setIsSidebarOpened(!isSidebarOpened)}
-          >
-            <span className="visually-hidden">menu</span>
-            <span className="menu-button__item"></span>
-            <span className="menu-button__item"></span>
-            <span className="menu-button__item"></span>
-          </button>
-          <div className="header__search search">
-            <input className="search__input" placeholder="Search" type="text" />
-            <button type="button" className="search__button">
-              <span className="visually-hidden">search filter button</span>
-              <SearchIcon />
+      <div
+        className={classNames("container", {
+          "container--sidebar-opened": isSidebarOpened,
+        })}
+      >
+        <div className="container__main">
+          <header className="header">
+            <img className="header__image" src={logoPath} alt="Logo" />
+            <button
+              type="button"
+              className="header__menu-button menu-button"
+              aria-expanded={isSidebarOpened}
+              onClick={() => setIsSidebarOpened(!isSidebarOpened)}
+            >
+              <span className="visually-hidden">menu</span>
+              <span className="menu-button__item"></span>
+              <span className="menu-button__item"></span>
+              <span className="menu-button__item"></span>
             </button>
-          </div>
-        </header>
-        <aside
-          className={classNames("navbar", "container__sidebar", {
-            "container__sidebar--opened": isSidebarOpened,
-          })}
-        >
+            <div className="header__search search">
+              <input
+                className="search__input"
+                placeholder="Search"
+                type="text"
+              />
+              <button type="button" className="search__button">
+                <span className="visually-hidden">search filter button</span>
+                <SearchIcon />
+              </button>
+            </div>
+          </header>
+        </div>
+        <aside className="navbar container__sidebar">
+          <img className="navbar__image" src={logoPath} alt="Logo" />
           <nav>
             <ul className="navbar__list">
               <li className="navbar__item">
