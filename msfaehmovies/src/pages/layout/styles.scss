@@ -2,26 +2,50 @@
 @use "include-media" as *;
 
 .container {
+  $parent: &;
+
   --sidebar-width: #{px2rem(196px)};
 
   display: grid;
   grid-template-areas: "content sidebar";
   grid-template-columns: 1fr 0;
   padding: 2rem 1.5rem 3rem;
+  overflow-x: hidden;
   transition: margin-left 0.3s, grid-template-columns 0.3s;
 
   @include media("<1440px") {
     &--sidebar-opened {
       grid-template-columns: 1fr var(--sidebar-width);
       margin-left: calc(-1 * var(--sidebar-width));
+
+      #{$parent}__sidebar {
+        margin-left: 0;
+      }
     }
   }
 
+  @include media(">=desktop") {
+    --content-size: 928px;
+
+    margin-right: calc((100vw - var(--content-size)) / 2);
+    margin-left: calc((100vw - var(--content-size)) / 2);
+    padding-right: 0;
+    padding-left: 0;
+  }
+
   @include media(">=1440px") {
-    --sidebar-width: #{px2rem(434px)};
+    --content-size: 1184px;
+    --sidebar-width: max-content;
 
     grid-template-areas: "sidebar content";
     grid-template-columns: var(--sidebar-width) 1fr;
+    gap: px2rem(128px);
+  }
+
+  @include media(">=1920px") {
+    --content-size: 1796px;
+
+    gap: px2rem(146px);
   }
 
   &__main {
@@ -31,6 +55,11 @@
   &__sidebar {
     grid-area: sidebar;
     width: var(--sidebar-width);
+    transition: margin-left 0.3s;
+
+    @include media(">=desktop", "<1440px") {
+      margin-left: calc((100vw - 1024px) / 2);
+    }
   }
 }
 
@@ -161,8 +190,8 @@
 .navbar {
   padding: 1rem 3rem 3rem 1.5rem;
 
-  @media (width >= 1440px) {
-    padding: 0.5rem px2rem(128px) px2rem(64px) px2rem(64px);
+  @include media(">=1440px") {
+    padding: 0.5rem 0 0;
   }
 
   &__image {
