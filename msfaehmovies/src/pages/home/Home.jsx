@@ -2,8 +2,10 @@ import "./styles.scss";
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useSearchParams } from "react-router-dom";
 
-import { Spinner } from "@/components/spinner/Spinner.jsx"
+import { Spinner } from "@/components/spinner/Spinner.jsx";
+import { api } from "@/services/movies-api.js";
 import {
   fetchMovies,
   getMovies,
@@ -16,12 +18,22 @@ export const Home = () => {
   const maxCount = useSelector(getMoviesTotalCount);
   const isLoading = useSelector(isMoviesLoading);
   const dispatch = useDispatch();
-  const [page, setPage] = useState(1);
 
   let isMoreAvailable = movies.length < maxCount;
 
+  let [searchParams, setSearchParams] = useSearchParams();
+  let pageSearchParam = parseInt(searchParams.get("page") ?? "1", 10);
+  let sSearchParam = searchParams.get("s") ?? api.s;
+  const [page, setPage] = useState(pageSearchParam);
+
   useEffect(() => {
-    let promise = dispatch(fetchMovies(page));
+    setPage(pageSearchParam);
+  }, [pageSearchParam]);
+
+  useEffect(() => {
+    let newSearchParams = { s: sSearchParam, page };
+    let promise = dispatch(fetchMovies(newSearchParams));
+    promise.then(() => setSearchParams(new URLSearchParams(newSearchParams)));
     return () => {
       promise.abort();
     };

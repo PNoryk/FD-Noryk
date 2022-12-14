@@ -16,12 +16,20 @@ const PAGE_HAS_BEEN_LOADED = "page-has-been-loaded";
 
 export const fetchMovies = createAsyncThunk(
   "movies/getAll",
-  async (page = 1, { signal, getState }) => {
-    let { loadedPages } = getState().movies;
-    if (loadedPages.includes(page)) {
+  async ({ s, page = 1 }, { signal, getState }) => {
+    let loadedPagesSet = new Set(getState().movies.loadedPages);
+    if (loadedPagesSet.has(page)) {
       return Promise.reject(PAGE_HAS_BEEN_LOADED);
     }
-    return await api.getAll({ requestParams: { page }, signal });
+
+    let promises = [];
+    let pagesToLoad = [...Array(page + 1).keys()]
+      .slice(1)
+      .filter((p) => !loadedPagesSet.has(p));
+    for (let p of pagesToLoad) {
+      promises.push(api.getAll({ requestParams: { s, page: p }, signal }));
+    }
+    return await Promise.all(promises);
   }
 );
 
@@ -36,11 +44,14 @@ const moviesSlice = createSlice({
         state.currentRequestId = meta.requestId;
       })
       .addCase(fetchMovies.fulfilled, (state, { payload, meta }) => {
+        let { page } = meta.arg;
         state.loading = "idle";
         state.currentRequestId = undefined;
-        state.entities.push(...transformSearchMovie(payload["Search"]));
-        state.totalCount = payload["totalResults"];
-        state.loadedPages.push(meta.arg);
+        state.entities.push(
+          ...transformSearchMovie(payload.map((el) => el["Search"]).flat())
+        );
+        state.totalCount = payload.at(-1)["totalResults"];
+        state.loadedPages = [...Array(page + 1).keys()].slice(1);
       })
       .addCase(fetchMovies.rejected, (state, { error, meta }) => {
         if (
@@ -48,7 +59,9 @@ const moviesSlice = createSlice({
           meta.requestId === state.currentRequestId
         ) {
           state.loading = "idle";
-          if (error.message !== PAGE_HAS_BEEN_LOADED) {
+          if (error.message === PAGE_HAS_BEEN_LOADED) {
+            state.entities = state.entities.slice(0, meta.arg.page * 10 + 1)
+          } else {
             state.error = error;
           }
         }
