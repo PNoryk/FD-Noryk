@@ -2,6 +2,7 @@ import "./styles.scss";
 
 import classNames from "classnames";
 import { useState } from "react";
+import { Outlet } from "react-router-dom";
 
 import { ReactComponent as Arrow } from "@/assets/icons/Arrow.svg";
 import { ReactComponent as BookmarkIcon } from "@/assets/icons/Bookmark.svg";
@@ -59,7 +60,9 @@ export const Layout = () => {
                 onClick={() => setIsDropDownOpened(!isDropDownOpened)}
               >
                 <span className="dropdown__button-rect icon-button">KK</span>
-                <span className="dropdown__button-text">Константин Константинопольский</span>
+                <span className="dropdown__button-text">
+                  Константин Константинопольский
+                </span>
                 <Arrow className="dropdown__arrow" />
               </button>
               <ul className="dropdown__menu">
@@ -68,6 +71,9 @@ export const Layout = () => {
               </ul>
             </div>
           </header>
+          <main>
+            <Outlet />
+          </main>
         </div>
         <aside className="navbar container__sidebar">
           <img className="navbar__image" src={logoPath} alt="Logo" />

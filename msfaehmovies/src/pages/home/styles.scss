@@ -1,0 +1,40 @@
+.card {
+  position: relative;
+
+  &__image {
+    --border-radius: 1.25rem;
+    --heigth: #{px2rem(368px)};
+
+    width: 100%;
+    height: var(--heigth);
+    object-fit: cover;
+    border-radius: var(--border-radius);
+
+    @include media(">=tablet", "<1440px") {
+      --heigth: #{px2rem(280px)};
+    }
+  }
+
+  &__title {
+    font-weight: 700;
+  }
+}
+
+.show-more {
+  display: inline-flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.5rem 1.5rem;
+  font-weight: 500;
+  font-size: px2rem(14px);
+  line-height: px2rem(20px);
+  background-color: var(--graphite);
+  border: 0;
+  border-radius: px2rem(40px);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--column-count), 1fr);
+  gap: px2rem(40px);
+}

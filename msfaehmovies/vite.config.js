@@ -6,6 +6,13 @@ import viteSvgr from "vite-plugin-svgr";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: '@use "@/scss/_functions.scss" as *; @use "include-media" as *; '
+      }
+    }
+  },
   plugins: [react(), viteSvgr(), eslintPlugin()],
   resolve: {
     alias: {

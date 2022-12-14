@@ -1,6 +1,3 @@
-@use "@/scss/_functions.scss" as *;
-@use "include-media" as *;
-
 .container {
   $parent: &;
 
@@ -47,7 +44,7 @@
 
     grid-template-areas: "sidebar content";
     grid-template-columns: var(--sidebar-width) 1fr;
-    gap: px2rem(128px);
+    gap: px2rem(56px);
   }
 
   @include media(">=1920px") {
@@ -57,7 +54,10 @@
   }
 
   &__main {
+    display: flex;
+    flex-direction: column;
     grid-area: content;
+    gap: px2rem(56px);
   }
 
   &__sidebar {
@@ -85,12 +85,8 @@
 
   @include media(">=1440px") {
     display: grid;
-    grid-template-columns: 3fr 1fr;
-  }
-
-  @include media(">=1920px") {
-    display: grid;
-    grid-template-columns: 4fr 1fr;
+    grid-template-columns: repeat(var(--column-count), 1fr);
+    gap: px2rem(40px);
   }
 
   &__image {
@@ -125,6 +121,14 @@
 
     @include media(">=tablet") {
       flex-grow: 1;
+    }
+
+    @include media(">=1440px") {
+      grid-column: 1 / 3;
+    }
+
+    @include media(">=1920px") {
+      grid-column: 1 / 5;
     }
   }
 }
@@ -223,16 +227,17 @@
   padding: 1rem 3rem 3rem 1.5rem;
 
   @include media(">=1440px") {
-    padding: 0.5rem 0 0;
+    padding: 0;
   }
 
   &__image {
     display: none;
-    height: px2rem(38px);
+    width: px2rem(250px);
+    height: px2rem(56px);
+    margin-bottom: px2rem(56px);
 
     @include media(">=1440px") {
-      display: block;
-      margin-bottom: px2rem(64px);
+      display: inline;
     }
   }
 
@@ -264,13 +269,13 @@
   display: none;
   min-width: 0;
 
-
   @include media(">=1440px") {
     display: block;
   }
 
   &__menu {
     position: absolute;
+    z-index: 1;
     display: none;
     width: 100%;
     margin-top: 24px;
@@ -318,12 +323,17 @@
     flex-shrink: 0;
     width: 1.5rem;
     height: 1.5rem;
+    transition: 0.1s;
     stroke: white;
   }
 
   &--opened {
     #{$parent}__menu {
       display: block;
+    }
+
+    #{$parent}__arrow {
+      transform: rotate(180deg);
     }
   }
 }

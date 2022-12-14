@@ -1,6 +1,7 @@
 module.exports = {
   env: {
     browser: true,
+    es2022: true,
     node: true,
   },
   extends: [
@@ -12,6 +13,10 @@ module.exports = {
     // Make sure it's always the last config, so it gets the chance to override other configs.
     'eslint-config-prettier',
   ],
+  parserOptions: {
+    ecmaVersion: 2022,
+    sourceType: "module",
+  },
   plugins: [ 'simple-import-sort' ],
   settings: {
     react: {
