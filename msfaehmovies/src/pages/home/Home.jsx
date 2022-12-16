@@ -24,7 +24,11 @@ export const Home = () => {
 
   let [searchParams, setSearchParams] = useSearchParams();
   let pageSearchParam = parseInt(searchParams.get("page") ?? "1", 10);
-  let sSearchParam = searchParams.get("s") ?? api.s;
+  let sSearchParam = searchParams.get("s")
+  if (sSearchParam) {
+    api.usersS = sSearchParam
+  }
+  sSearchParam ??= api.s;
   const [page, setPage] = useState(pageSearchParam);
 
   useEffect(() => {

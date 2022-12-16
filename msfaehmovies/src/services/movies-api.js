@@ -2,11 +2,16 @@ class MoviesApi {
   #apiURL = "http://www.omdbapi.com/";
   #apiKey = import.meta.env.VITE_MOVIE_API_KEY;
   #cache = {}
-  s;
+  #defaultS = null;
+  usersS = null;
   ITEMS_PER_PAGE = 10;
 
   constructor() {
     this.#updateRandomParam();
+  }
+
+  get s() {
+    return this.usersS || this.#defaultS;
   }
 
   #updateRandomParam() {
@@ -18,7 +23,7 @@ class MoviesApi {
       "clever",
     ];
 
-    this.s = searchWords[Math.floor(Math.random() * searchWords.length)];
+    this.#defaultS = searchWords[Math.floor(Math.random() * searchWords.length)];
   }
 
   async getAll({ requestParams, signal }) {
