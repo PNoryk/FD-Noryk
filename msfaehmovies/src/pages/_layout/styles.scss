@@ -295,13 +295,28 @@
   }
 
   &__menu-item {
+    position: relative;
     padding: 1rem 1.25rem;
     font-weight: 500;
+
+    &:focus-within,
+    &:hover {
+      color: var(--primary2);
+    }
 
     & + & {
       padding-top: px2rem(15px);
       border-top: 1px solid var(--graphite);
     }
+  }
+
+  &__link {
+    @include stretched-link;
+
+    padding: 0;
+    color: currentcolor;
+    text-decoration: none;
+    border: 0;
   }
 
   &__button {
@@ -319,6 +334,7 @@
     flex-grow: 1;
     overflow-x: hidden;
     white-space: nowrap;
+    text-align: left;
     text-overflow: ellipsis;
   }
 

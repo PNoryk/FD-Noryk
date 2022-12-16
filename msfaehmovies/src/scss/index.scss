@@ -70,10 +70,23 @@ button {
   cursor: pointer;
 }
 
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
 input {
+  padding: 1rem 1.25rem;
   font-weight: 500;
+  border: 2px solid transparent;
+  border-radius: var(--border-radius);
 
   &::placeholder {
     color: var(--secondary);
+  }
+
+  &:focus {
+    border-color: var(--primary);
+    outline: none;
   }
 }

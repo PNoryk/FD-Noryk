@@ -1,0 +1,116 @@
+.signin {
+  $parent: &;
+
+  position: relative;
+  display: grid;
+  grid-template-rows: min-content 1fr min-content;
+  gap: px2rem(48px);
+  height: 100%;
+  padding: px2rem(24px);
+  place-items: center;
+  overflow: hidden;
+  background-color: var(--black);
+
+  &::before {
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background: url('@/assets/bg.png') 50% 0 repeat;
+    transform: rotate(-15deg);
+    filter: opacity(80%);
+    content: "";
+  }
+
+  &__link {
+    z-index: 1;
+
+    @include media(">=tablet") {
+      justify-self: start;
+    }
+  }
+
+  &__image {
+    height: px2rem(40px);
+  }
+
+  &__container {
+    z-index: 1;
+    display: grid;
+    gap: 20px;
+    padding: 1.5rem;
+    background-color: var(--dark);
+    border-radius: var(--border-radius);
+
+    @include media(">=tablet") {
+      width: px2rem(540px);
+    }
+  }
+
+  &__heading {
+    margin: 0 0 px2rem(12px);
+    font-weight: 600;
+    font-size: px2rem(20px);
+    line-height: px2rem(32px);
+  }
+
+  &__input-group {
+    position: relative;
+  }
+
+  &__label {
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  &__input {
+    width: 100%;
+    background-color: var(--graphite);
+
+    &:has(+ #{$parent}__error) {
+      border: 2px solid var(--error);
+    }
+  }
+
+  &__error {
+    margin-top: px2rem(4px);
+    color: var(--error);
+
+    & ~ .signin__input {
+      border-color: var(--error);
+    }
+  }
+
+  &__button {
+    margin-top: px2rem(12px);
+    padding: 16px;
+    font-weight: 600;
+    background-color: var(--primary);
+    border-radius: var(--border-radius);
+  }
+
+  &__signup {
+    color: var(--secondary);
+    text-align: center;
+  }
+
+  &__rights {
+    z-index: 1;
+    font-weight: 500;
+  }
+
+  &__show-password-button {
+    position: absolute;
+    right: 1rem;
+    bottom: calc(1rem + 1px);
+    padding: 0;
+    font-size: 0;
+    border: 0;
+  }
+
+  &__show-password-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--secondary);
+  }
+}

@@ -1,32 +1,35 @@
 import "./styles.scss";
 
 import { useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
 import { Card } from "@/components/card/Card.jsx";
 import { Spinner } from "@/components/spinner/Spinner.jsx";
+import { auth } from "@/services/firebase.js";
 import { api } from "@/services/movies-api.js";
 import {
   fetchMovies,
   getMovies,
   getMoviesTotalCount,
-  isMoviesLoading,
+  isMoviesLoading as isMoviesLoadingAction,
 } from "@/store/features/moviesSlice.js";
 
 export const Home = () => {
   const movies = useSelector(getMovies);
   const maxCount = useSelector(getMoviesTotalCount);
-  const isLoading = useSelector(isMoviesLoading);
+  const isMoviesLoading = useSelector(isMoviesLoadingAction);
   const dispatch = useDispatch();
 
   let isMoreAvailable = movies.length < maxCount;
 
   let [searchParams, setSearchParams] = useSearchParams();
   let pageSearchParam = parseInt(searchParams.get("page") ?? "1", 10);
-  let sSearchParam = searchParams.get("s")
+  let sSearchParam = searchParams.get("s");
   if (sSearchParam) {
-    api.usersS = sSearchParam
+    api.usersS = sSearchParam;
   }
   sSearchParam ??= api.s;
   const [page, setPage] = useState(pageSearchParam);
@@ -44,12 +47,18 @@ export const Home = () => {
     };
   }, [page]);
 
+  const [user, isUserLoading] = useAuthState(auth);
+
   return (
     <>
       <div className="grid">
         {movies.length
           ? movies.map((movie) => (
-             <Card movie={movie} key={movie.imdbId} showFavorite />
+              <Card
+                movie={movie}
+                key={movie.imdbId}
+                showFavorite={!isUserLoading && user}
+              />
             ))
           : null}
       </div>
@@ -57,13 +66,14 @@ export const Home = () => {
         <p className="text-center">
           <button
             className="show-more"
-            disabled={isLoading}
+            disabled={isMoviesLoading}
             onClick={() => setPage((page) => page + 1)}
           >
-            Show more {isLoading && <Spinner />}
+            Show more {isMoviesLoading && <Spinner />}
           </button>
         </p>
       )}
+      <ToastContainer theme="dark" />
     </>
   );
 };

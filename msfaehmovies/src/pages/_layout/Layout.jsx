@@ -1,7 +1,10 @@
 import "./styles.scss";
 
 import classNames from "classnames";
-import { useRef, useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { useEffect, useRef, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { AiOutlineUser } from "react-icons/ai";
 import { Link, Outlet } from "react-router-dom";
 import { useClickAway } from "react-use";
 
@@ -11,14 +14,40 @@ import { ReactComponent as HomeIcon } from "@/assets/icons/Home.svg";
 import { ReactComponent as SearchIcon } from "@/assets/icons/Search.svg";
 import { ReactComponent as SettingIcon } from "@/assets/icons/Setting.svg";
 import logoPath from "@/assets/logo.svg";
+import { auth, db, signOut } from "@/services/firebase.js";
 
 export const Layout = () => {
   let [isSidebarOpened, setIsSidebarOpened] = useState(false);
   let [isDropDownOpened, setIsDropDownOpened] = useState(false);
 
   let dropdownRef = useRef(null);
-  let closeDropdown = () => setIsDropDownOpened(false)
+  let closeDropdown = () => setIsDropDownOpened(false);
   useClickAway(dropdownRef, closeDropdown);
+
+  const [user, loading] = useAuthState(auth);
+  let [userName, setUserName] = useState("SignOut");
+  let userInitials = userName
+    .split(" ")
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join("");
+  useEffect(() => {
+    async function fetchUserName() {
+      if (!loading && user) {
+        const docSnap = await getDoc(doc(db, "users", user.uid));
+        if (docSnap.exists()) {
+          // Convert to City object
+          const data = docSnap.data();
+          // Use a City instance method
+          console.log(data);
+          return;
+        }
+        setUserName("Sign In");
+      }
+    }
+
+    fetchUserName();
+  }, [loading, user]);
 
   return (
     <>
@@ -64,15 +93,42 @@ export const Layout = () => {
                 title="Константин Константинопольский"
                 onClick={() => setIsDropDownOpened(!isDropDownOpened)}
               >
-                <span className="dropdown__button-rect icon-button">KK</span>
-                <span className="dropdown__button-text">
-                  Константин Константинопольский
+                <span className="dropdown__button-rect icon-button">
+                  {user ? userInitials : <AiOutlineUser size={24} />}
                 </span>
+                <span className="dropdown__button-text">{userName}</span>
                 <Arrow className="dropdown__arrow" />
               </button>
               <ul className="dropdown__menu">
-                <li className="dropdown__menu-item">SignIn</li>
-                <li className="dropdown__menu-item">SignUp</li>
+                {user && (
+                  <>
+                    <li className="dropdown__menu-item">
+                      <button
+                        type="button"
+                        className="dropdown__link"
+                        onClick={() =>
+                          signOut().then(() => setUserName("Sign In"))
+                        }
+                      >
+                        Sign out
+                      </button>
+                    </li>
+                  </>
+                )}
+                {!user && (
+                  <>
+                    <li className="dropdown__menu-item">
+                      <Link className="dropdown__link" to={"/signin"}>
+                        Sign In
+                      </Link>
+                    </li>
+                    <li className="dropdown__menu-item">
+                      <Link className="dropdown__link" to={"/signup"}>
+                        Sign Up
+                      </Link>
+                    </li>
+                  </>
+                )}
               </ul>
             </div>
           </header>
@@ -97,7 +153,10 @@ export const Layout = () => {
               {/*  </Link>*/}
               {/*</li>*/}
               <li className="navbar__item">
-                <BookmarkIcon /> Favorites
+                <BookmarkIcon />
+                <Link className="navbar__link" to={"/favorites"}>
+                  Favorites
+                </Link>
               </li>
               <li className="navbar__item">
                 <SettingIcon /> Settings
