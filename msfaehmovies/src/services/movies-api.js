@@ -2,6 +2,7 @@ class MoviesApi {
   #apiURL = "http://www.omdbapi.com/";
   #apiKey = import.meta.env.VITE_MOVIE_API_KEY;
   s;
+  ITEMS_PER_PAGE = 10;
 
   constructor() {
     this.#updateRandomParam();

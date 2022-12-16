@@ -54,13 +54,15 @@ const moviesSlice = createSlice({
         state.loadedPages = [...Array(page + 1).keys()].slice(1);
       })
       .addCase(fetchMovies.rejected, (state, { error, meta }) => {
+        let { page } = meta.arg;
         if (
           state.loading === "pending" &&
           meta.requestId === state.currentRequestId
         ) {
           state.loading = "idle";
           if (error.message === PAGE_HAS_BEEN_LOADED) {
-            state.entities = state.entities.slice(0, meta.arg.page * 10 + 1)
+            state.entities = state.entities.slice(0, page * api.ITEMS_PER_PAGE);
+            state.loadedPages = [...Array(page + 1).keys()].slice(1);
           } else {
             state.error = error;
           }
