@@ -1,6 +1,7 @@
 class MoviesApi {
   #apiURL = "http://www.omdbapi.com/";
   #apiKey = import.meta.env.VITE_MOVIE_API_KEY;
+  #cache = {}
   s;
   ITEMS_PER_PAGE = 10;
 
@@ -21,15 +22,24 @@ class MoviesApi {
   }
 
   async getAll({ requestParams, signal }) {
-    let params = new URLSearchParams({
+    let newRequestParams = {
       apikey: this.#apiKey,
       s: this.s,
       ...requestParams,
-    });
+    }
+    let cacheKey = [newRequestParams.s, newRequestParams.page].join("_");
+    let savedData = this.#cache[cacheKey]
+    if (savedData) {
+      return savedData
+    }
+
+    let params = new URLSearchParams(newRequestParams);
     let url = this.#apiURL + "?" + params;
     // try {
       let response = await fetch(url, { signal });
-      return await response.json();
+      let data = await response.json();
+      this.#cache[cacheKey] = data;
+      return data
     // } catch (error) {
       // console.log("error", error);
     // }
