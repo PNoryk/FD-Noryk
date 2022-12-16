@@ -1,0 +1,44 @@
+.card {
+  --image-heigth: #{px2rem(368px)};
+
+  $parent: &;
+
+  position: relative;
+
+  @include media(">=tablet", "<1440px") {
+    --image-heigth: #{px2rem(280px)};
+  }
+
+  &__image {
+    --border-radius: 1.25rem;
+
+    width: 100%;
+    height: var(--image-heigth);
+    object-fit: cover;
+    border-radius: var(--border-radius);
+
+    &--no-image {
+      border: px2rem(4px) solid;
+    }
+  }
+
+  &__title {
+    font-weight: 700;
+  }
+
+  &__bookmark {
+    position: absolute;
+    top: calc(var(--image-heigth) - 1rem - 3.5rem);
+    right: 1rem;
+    padding: 1rem;
+    background-color: var(--graphite);
+    border: 0;
+    border-radius: var(--border-radius);
+  }
+
+  &--favorite {
+    #{$parent}__bookmark {
+      color: var(--orange);
+    }
+  }
+}

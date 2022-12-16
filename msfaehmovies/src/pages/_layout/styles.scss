@@ -250,6 +250,7 @@
   }
 
   &__item {
+    position: relative;
     display: inline-flex;
     gap: 1.25rem;
     align-items: center;
@@ -259,6 +260,13 @@
     &::before {
       content: none;
     }
+  }
+
+  &__link {
+    @include stretched-link;
+
+    color: currentcolor;
+    text-decoration: none;
   }
 }
 

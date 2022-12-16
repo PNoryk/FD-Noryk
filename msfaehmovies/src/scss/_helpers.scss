@@ -1,3 +1,5 @@
+@use '@/scss/functions' as *;
+
 .visually-hidden,
 .visually-hidden-focusable:not(:focus, :focus-within) {
   position: absolute !important;
@@ -15,13 +17,8 @@
   list-style: none;
 }
 
-.stretched-link::after {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  content: "";
+.stretched-link {
+  @include stretched-link;
 }
 
 .text-center {

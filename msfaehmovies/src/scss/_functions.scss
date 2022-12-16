@@ -1,5 +1,16 @@
 @use "sass:math";
 
-@function px2rem ($px, $defaultBase: 16px) {
-  @return #{math.div($px, $defaultBase)}rem
+@function px2rem($px, $defaultBase: 16px) {
+  @return #{math.div($px, $defaultBase)}rem;
+}
+
+@mixin stretched-link {
+  &::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    content: "";
+  }
 }

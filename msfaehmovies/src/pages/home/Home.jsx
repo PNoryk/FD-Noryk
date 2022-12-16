@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 
+import { Card } from "@/components/card/Card.jsx";
 import { Spinner } from "@/components/spinner/Spinner.jsx";
 import { api } from "@/services/movies-api.js";
 import {
@@ -44,15 +45,7 @@ export const Home = () => {
       <div className="grid">
         {movies.length
           ? movies.map((movie) => (
-              <div className="card" key={movie.imdbId}>
-                <img
-                  className="card__image"
-                  src={movie.poster}
-                  alt={movie.title + " image"}
-                  loading="lazy"
-                />
-                <h2 className="card__title">{movie.title}</h2>
-              </div>
+             <Card movie={movie} key={movie.imdbId} showFavorite />
             ))
           : null}
       </div>

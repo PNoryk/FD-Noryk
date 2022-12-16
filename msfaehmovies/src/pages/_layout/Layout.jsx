@@ -2,11 +2,10 @@ import "./styles.scss";
 
 import classNames from "classnames";
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 
 import { ReactComponent as Arrow } from "@/assets/icons/Arrow.svg";
 import { ReactComponent as BookmarkIcon } from "@/assets/icons/Bookmark.svg";
-import { ReactComponent as FlameIcon } from "@/assets/icons/Flame.svg";
 import { ReactComponent as HomeIcon } from "@/assets/icons/Home.svg";
 import { ReactComponent as SearchIcon } from "@/assets/icons/Search.svg";
 import { ReactComponent as SettingIcon } from "@/assets/icons/Setting.svg";
@@ -80,11 +79,17 @@ export const Layout = () => {
           <nav>
             <ul className="navbar__list">
               <li className="navbar__item">
-                <HomeIcon /> Home
+                <HomeIcon />{" "}
+                <Link className="navbar__link" to={ "/" }>
+                  Home
+                </Link>
               </li>
-              <li className="navbar__item">
-                <FlameIcon /> Trends
-              </li>
+              {/*<li className="navbar__item">*/}
+              {/*  <FlameIcon />{" "}*/}
+              {/*  <Link className="navbar__link" to={"/trends"}>*/}
+              {/*    Trends*/}
+              {/*  </Link>*/}
+              {/*</li>*/}
               <li className="navbar__item">
                 <BookmarkIcon /> Favorites
               </li>
