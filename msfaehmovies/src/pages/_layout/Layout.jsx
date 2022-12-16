@@ -1,8 +1,9 @@
 import "./styles.scss";
 
 import classNames from "classnames";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
+import { useClickAway } from "react-use";
 
 import { ReactComponent as Arrow } from "@/assets/icons/Arrow.svg";
 import { ReactComponent as BookmarkIcon } from "@/assets/icons/Bookmark.svg";
@@ -14,6 +15,10 @@ import logoPath from "@/assets/logo.svg";
 export const Layout = () => {
   let [isSidebarOpened, setIsSidebarOpened] = useState(false);
   let [isDropDownOpened, setIsDropDownOpened] = useState(false);
+
+  let dropdownRef = useRef(null);
+  let closeDropdown = () => setIsDropDownOpened(false)
+  useClickAway(dropdownRef, closeDropdown);
 
   return (
     <>
@@ -48,6 +53,7 @@ export const Layout = () => {
               </button>
             </div>
             <div
+              ref={dropdownRef}
               className={classNames("header__dropdown", "dropdown", {
                 "dropdown--opened": isDropDownOpened,
               })}
@@ -80,7 +86,7 @@ export const Layout = () => {
             <ul className="navbar__list">
               <li className="navbar__item">
                 <HomeIcon />{" "}
-                <Link className="navbar__link" to={ "/" }>
+                <Link className="navbar__link" to={"/"}>
                   Home
                 </Link>
               </li>
