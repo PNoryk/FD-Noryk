@@ -14,7 +14,7 @@ import { ReactComponent as SearchIcon } from "@/assets/icons/Search.svg";
 import { ReactComponent as SettingIcon } from "@/assets/icons/Setting.svg";
 import logoPath from "@/assets/logo.svg";
 import {
-  addToFavorites,
+  addAllToFavorites as addAllToFavoritesAction,
   getUserState,
   removeAllFromFavorites as removeAllFromFavoritesAction,
   signOut,
@@ -41,12 +41,7 @@ export const Layout = () => {
   let movies = useSelector(getMovies);
 
   let addAllToFavorites = async () => {
-    let savedFavorites = new Set(user.favorites);
-    await Promise.all(
-      movies
-        .filter(({ imdbId }) => !savedFavorites.has(imdbId))
-        .map(({ imdbId }) => dispatch(addToFavorites(imdbId)))
-    );
+    await dispatch(addAllToFavoritesAction(movies.map(({ imdbId }) => imdbId)))
     toast.success(
       <span>
         <b>{movies.length} movies</b> were successfully added to favorites👍

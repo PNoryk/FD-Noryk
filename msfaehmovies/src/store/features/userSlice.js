@@ -33,6 +33,17 @@ export const addToFavorites = createAsyncThunk(
   }
 );
 
+export const addAllToFavorites = createAsyncThunk(
+  "user/addToFavorites",
+  async (movieIds, { getState }) => {
+    let { userId } = getState().user;
+
+    await updateDoc(doc(db, "users", userId), {
+      favorites: arrayUnion(...movieIds),
+    });
+  }
+);
+
 export const removeFromFavorites = createAsyncThunk(
   "user/removeFromFavorites",
   async (movieId, { getState }) => {
