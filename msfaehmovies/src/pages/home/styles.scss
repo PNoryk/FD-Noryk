@@ -15,4 +15,9 @@
   display: grid;
   grid-template-columns: repeat(var(--column-count), 1fr);
   gap: px2rem(40px);
+  transition: opacity 1s;
+
+  &--hidden {
+    opacity: 0;
+  }
 }

@@ -45,6 +45,17 @@ export const removeFromFavorites = createAsyncThunk(
   }
 );
 
+export const removeAllFromFavorites = createAsyncThunk(
+  "user/removeAllFromFavorites",
+  async (arg, { getState }) => {
+    let { userId } = getState().user;
+
+    await updateDoc(doc(db, "users", userId), {
+      favorites: [],
+    });
+  }
+);
+
 const fetchUserData = createAsyncThunk("user/fetchData", async (userId) => {
   let response = await getDoc(doc(db, "users", userId));
   if (response.exists()) {
@@ -161,6 +172,10 @@ export const userSlice = createSlice({
       .addCase(removeFromFavorites.fulfilled, (state, { meta }) => {
         let { arg: movieId } = meta;
         state.favorites = state.favorites.filter((el) => el !== movieId);
+      })
+
+      .addCase(removeAllFromFavorites.fulfilled, (state) => {
+        state.favorites = [];
       });
   },
 });

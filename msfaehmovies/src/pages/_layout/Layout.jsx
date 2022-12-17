@@ -13,7 +13,14 @@ import { ReactComponent as HomeIcon } from "@/assets/icons/Home.svg";
 import { ReactComponent as SearchIcon } from "@/assets/icons/Search.svg";
 import { ReactComponent as SettingIcon } from "@/assets/icons/Setting.svg";
 import logoPath from "@/assets/logo.svg";
-import { getUserState, signOut } from "@/store/features/userSlice.js";
+import {
+  addToFavorites,
+  getUserState,
+  removeAllFromFavorites as removeAllFromFavoritesAction,
+  signOut,
+} from "@/store/features/userSlice.js";
+import { toast } from "react-toastify";
+import { getMovies } from "@/store/features/moviesSlice.js";
 
 export const Layout = () => {
   let [isSidebarOpened, setIsSidebarOpened] = useState(false);
@@ -31,6 +38,38 @@ export const Layout = () => {
     .join("");
 
   let dispatch = useDispatch();
+  let movies = useSelector(getMovies);
+
+  let addAllToFavorites = async () => {
+    let savedFavorites = new Set(user.favorites);
+    await Promise.all(
+      movies
+        .filter(({ imdbId }) => !savedFavorites.has(imdbId))
+        .map(({ imdbId }) => dispatch(addToFavorites(imdbId)))
+    );
+    toast.success(
+      <span>
+        <b>{movies.length} movies</b> were successfully added to favorites👍
+      </span>
+    );
+  };
+
+  let removeAllFromFavorites = async () => {
+    let favorites = document.querySelector(".grid--favorites");
+    if (favorites) {
+      favorites.addEventListener("transitionend", () => {
+        dispatch(removeAllFromFavoritesAction()).then(() => {
+          toast.success(
+            <span>
+              <b>{user.favorites.length} movies</b> were successfully removed
+              from favorites🗑
+            </span>
+          );
+        });
+      });
+      favorites.classList.add("grid--hidden");
+    }
+  };
 
   return (
     <>
@@ -87,6 +126,24 @@ export const Layout = () => {
               <ul className="dropdown__menu">
                 {user && (
                   <>
+                    <li className="dropdown__menu-item">
+                      <button
+                        type="button"
+                        className="dropdown__link"
+                        onClick={addAllToFavorites}
+                      >
+                        Add all to favorites
+                      </button>
+                    </li>
+                    <li className="dropdown__menu-item">
+                      <button
+                        type="button"
+                        className="dropdown__link"
+                        onClick={removeAllFromFavorites}
+                      >
+                        Remove all from favorites
+                      </button>
+                    </li>
                     <li className="dropdown__menu-item">
                       <button
                         type="button"
