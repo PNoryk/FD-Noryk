@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { ToastContainer } from "react-toastify";
 
 import { Card } from "@/components/card/Card.jsx";
 import { fetchFavorites, getFavorites } from "@/store/features/moviesSlice.js";
@@ -15,10 +16,13 @@ export const Favorites = () => {
   }, [user?.favorites]);
 
   return (
-    <div className="grid">
-      {movies
-        ? movies.map((movie) => <Card movie={movie} key={movie.imdbId} showFavorite isFavorite />)
-        : null}
-    </div>
+    <>
+      <div className="grid">
+        { movies
+          ? movies.map((movie) => <Card movie={ movie } key={ movie.imdbId } showFavorite isFavorite/>)
+          : null }
+      </div>
+      <ToastContainer theme="dark" />
+    </>
   );
 };
