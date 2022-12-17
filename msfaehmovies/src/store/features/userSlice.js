@@ -160,9 +160,7 @@ export const userSlice = createSlice({
 
       .addCase(removeFromFavorites.fulfilled, (state, { meta }) => {
         let { arg: movieId } = meta;
-        state.favorites = state.favorites.filter(
-          (el) => el.movieId !== movieId
-        );
+        state.favorites = state.favorites.filter((el) => el !== movieId);
       });
   },
 });
