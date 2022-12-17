@@ -1,12 +1,13 @@
 import "../sign-in/styles.scss";
 
 import { useEffect, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 import logoPath from "@/assets/logo.svg";
-import { auth, signUpWithEmailAndPassword } from "@/services/firebase.js";
+import { Spinner } from "@/components/spinner/Spinner";
+import { getUserState, signUp } from "@/store/features/userSlice.js";
 
 export const SignUp = () => {
   const [name, setName] = useState("");
@@ -19,25 +20,32 @@ export const SignUp = () => {
     passwordType === "password" ? AiOutlineEye : AiOutlineEyeInvisible;
   const togglePasswordType = () =>
     setPasswordType(passwordType === "password" ? "text" : "password");
-  const [user, loading] = useAuthState(auth);
+
+  let [user, isLoading] = useSelector(getUserState);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (loading) {
+    if (isLoading) {
       // maybe trigger a loading screen
       return;
     }
     if (user) {
       navigate("/");
     }
-  }, [user, loading]);
+  }, [user, isLoading]);
+
+  let dispatch = useDispatch();
+  const onFormSubmit = (e) => {
+    e.preventDefault();
+    dispatch(signUp({ name, email, password }));
+  };
 
   return (
     <div className="signin">
       <Link to={"/"} className="signin__link">
         <img className="signin__image" src={logoPath} alt="Logo" />
       </Link>
-      <div className="signin__container">
+      <form className="signin__container" onSubmit={(e) => onFormSubmit(e)}>
         <h1 className="signin__heading">Sign Up</h1>
         <div className="signin__input-group">
           <label htmlFor="name" className="signin__label">
@@ -101,16 +109,13 @@ export const SignUp = () => {
             <div className="signin__error">Passwords {"doesn't"} match</div>
           )}
         </div>
-        <button
-          className="signin__button"
-          onClick={() => signUpWithEmailAndPassword(name, email, password)}
-        >
-          Sign In
+        <button disabled={isLoading} className="signin__button">
+          Sign In {isLoading && <Spinner />}
         </button>
         <div className="signin__signup">
           {"Don't"} have an account? <Link to="/register">Sign up</Link>
         </div>
-      </div>
+      </form>
       <p className="signin__rights">© All Rights Reserved</p>
     </div>
   );

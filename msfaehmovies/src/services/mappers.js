@@ -1,11 +1,11 @@
-export const transformSearchMovie = (searchMovies) => {
-  return searchMovies.map((searchMovie) => {
+export const transformMovies = (movies) => {
+  return movies.map((movie) => {
     return {
-      title: searchMovie.Title,
-      year: searchMovie.Year,
-      imdbId: searchMovie.imdbID,
-      type: searchMovie.Type,
-      poster: searchMovie.Poster,
+      title: movie.Title,
+      year: movie.Year,
+      imdbId: movie.imdbID,
+      type: movie.Type,
+      poster: movie.Poster,
     };
   });
 };

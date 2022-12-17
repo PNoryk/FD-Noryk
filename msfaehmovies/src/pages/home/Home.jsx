@@ -1,14 +1,12 @@
 import "./styles.scss";
 
 import { useEffect, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import { Card } from "@/components/card/Card.jsx";
 import { Spinner } from "@/components/spinner/Spinner.jsx";
-import { auth } from "@/services/firebase.js";
 import { api } from "@/services/movies-api.js";
 import {
   fetchMovies,
@@ -16,6 +14,7 @@ import {
   getMoviesTotalCount,
   isMoviesLoading as isMoviesLoadingAction,
 } from "@/store/features/moviesSlice.js";
+import { getUserState } from "@/store/features/userSlice.js";
 
 export const Home = () => {
   const movies = useSelector(getMovies);
@@ -47,7 +46,8 @@ export const Home = () => {
     };
   }, [page]);
 
-  const [user, isUserLoading] = useAuthState(auth);
+  let [user] = useSelector(getUserState)
+  const userFavorites = new Set(user?.favorites)
 
   return (
     <>
@@ -57,7 +57,8 @@ export const Home = () => {
               <Card
                 movie={movie}
                 key={movie.imdbId}
-                showFavorite={!isUserLoading && user}
+                showFavorite={!!user}
+                isFavorite={userFavorites.has(movie.imdbId)}
               />
             ))
           : null}

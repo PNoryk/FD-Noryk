@@ -1,10 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-import { transformSearchMovie } from "@/services/mappers.js";
+import { transformMovies } from "@/services/mappers.js";
 import { api } from "@/services/movies-api.js";
 
 let initialState = {
   entities: [],
+  favorites: [],
   totalCount: null,
   loading: "idle",
   error: null,
@@ -33,6 +34,16 @@ export const fetchMovies = createAsyncThunk(
   }
 );
 
+export const fetchFavorites = createAsyncThunk(
+  "movies/getFavorites",
+  async (arg, { signal, getState }) => {
+    let favorites = getState().user.favorites;
+
+    let promises = favorites.map((movieId) => api.getById({ movieId, signal }));
+    return await Promise.all(promises);
+  }
+);
+
 const moviesSlice = createSlice({
   name: "movies",
   initialState,
@@ -48,7 +59,7 @@ const moviesSlice = createSlice({
         state.loading = "idle";
         state.currentRequestId = undefined;
         state.entities.push(
-          ...transformSearchMovie(payload.map((el) => el["Search"]).flat())
+          ...transformMovies(payload.map((el) => el["Search"]).flat())
         );
         state.totalCount = payload.at(-1)["totalResults"];
         state.loadedPages = [...Array(page + 1).keys()].slice(1);
@@ -67,6 +78,25 @@ const moviesSlice = createSlice({
             state.error = error;
           }
         }
+      })
+
+      .addCase(fetchFavorites.pending, (state, { meta }) => {
+        state.loading = "pending";
+        state.currentRequestId = meta.requestId;
+      })
+      .addCase(fetchFavorites.fulfilled, (state, { payload }) => {
+        state.loading = "idle";
+        state.currentRequestId = undefined;
+        state.favorites = transformMovies(payload);
+      })
+      .addCase(fetchFavorites.rejected, (state, { error, meta }) => {
+        if (
+          state.loading === "pending" &&
+          meta.requestId === state.currentRequestId
+        ) {
+          state.loading = "idle";
+          state.error = error;
+        }
       });
   },
 });
@@ -74,5 +104,6 @@ const moviesSlice = createSlice({
 export default moviesSlice.reducer;
 
 export const getMovies = (store) => store.movies.entities;
+export const getFavorites = (store) => store.movies.favorites;
 export const isMoviesLoading = (store) => store.movies.loading === "pending";
 export const getMoviesTotalCount = (store) => store.movies.totalCount;

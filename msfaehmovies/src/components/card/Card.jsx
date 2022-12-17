@@ -1,28 +1,35 @@
 import "./styles.scss";
 
 import classNames from "classnames";
-import { arrayUnion, doc, updateDoc } from "firebase/firestore";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
 import { ReactComponent as BookmarkIcon } from "@/assets/icons/Bookmark.svg";
 import noImageSrc from "@/assets/no-image.png";
-import { auth, db } from "@/services/firebase.js";
+import { addToFavorites, removeFromFavorites } from "@/store/features/userSlice.js";
 
 export const Card = ({ movie, showFavorite = false, isFavorite }) => {
   let { poster, title } = movie;
   let hasImage = poster?.startsWith("http");
-  const [user] = useAuthState(auth);
+  let dispatch = useDispatch()
 
-  let addToFavorite = async () => {
-    await updateDoc(doc(db, "users", user.uid), {
-      favorite: arrayUnion(movie.imdbId),
-    });
-    toast.success(
-      <span>
-        <b>{title}</b> was successfully added to favorites👍
-      </span>
-    );
+  let toggleFavorite = async () => {
+    if (isFavorite) {
+      await dispatch(removeFromFavorites(movie.imdbId))
+      toast.success(
+        <span>
+          <b>{title}</b> was successfully removed from favorites🗑
+        </span>
+      );
+    } else {
+      await dispatch(addToFavorites(movie.imdbId))
+      toast.success(
+        <span>
+          <b>{title}</b> was successfully added to favorites👍
+        </span>
+      );
+    }
+
   };
 
   return (
@@ -40,7 +47,7 @@ export const Card = ({ movie, showFavorite = false, isFavorite }) => {
         <button
           type="button"
           className="card__bookmark"
-          onClick={addToFavorite}
+          onClick={toggleFavorite}
         >
           <span className="visually-hidden">add to favorites</span>
           <BookmarkIcon />

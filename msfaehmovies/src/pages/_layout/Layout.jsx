@@ -1,10 +1,9 @@
 import "./styles.scss";
 
 import classNames from "classnames";
-import { doc, getDoc } from "firebase/firestore";
-import { useEffect, useRef, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { useRef, useState } from "react";
 import { AiOutlineUser } from "react-icons/ai";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, Outlet } from "react-router-dom";
 import { useClickAway } from "react-use";
 
@@ -14,7 +13,7 @@ import { ReactComponent as HomeIcon } from "@/assets/icons/Home.svg";
 import { ReactComponent as SearchIcon } from "@/assets/icons/Search.svg";
 import { ReactComponent as SettingIcon } from "@/assets/icons/Setting.svg";
 import logoPath from "@/assets/logo.svg";
-import { auth, db, signOut } from "@/services/firebase.js";
+import { getUserState, signOut } from "@/store/features/userSlice.js";
 
 export const Layout = () => {
   let [isSidebarOpened, setIsSidebarOpened] = useState(false);
@@ -24,30 +23,14 @@ export const Layout = () => {
   let closeDropdown = () => setIsDropDownOpened(false);
   useClickAway(dropdownRef, closeDropdown);
 
-  const [user, loading] = useAuthState(auth);
-  let [userName, setUserName] = useState("SignOut");
-  let userInitials = userName
+  let [user] = useSelector(getUserState);
+  let userInitials = user?.userName
     .split(" ")
     .slice(0, 2)
     .map((word) => word[0])
     .join("");
-  useEffect(() => {
-    async function fetchUserName() {
-      if (!loading && user) {
-        const docSnap = await getDoc(doc(db, "users", user.uid));
-        if (docSnap.exists()) {
-          // Convert to City object
-          const data = docSnap.data();
-          // Use a City instance method
-          console.log(data);
-          return;
-        }
-        setUserName("Sign In");
-      }
-    }
 
-    fetchUserName();
-  }, [loading, user]);
+  let dispatch = useDispatch();
 
   return (
     <>
@@ -96,7 +79,9 @@ export const Layout = () => {
                 <span className="dropdown__button-rect icon-button">
                   {user ? userInitials : <AiOutlineUser size={24} />}
                 </span>
-                <span className="dropdown__button-text">{userName}</span>
+                <span className="dropdown__button-text">
+                  {user?.userName || "Sign In"}
+                </span>
                 <Arrow className="dropdown__arrow" />
               </button>
               <ul className="dropdown__menu">
@@ -106,9 +91,7 @@ export const Layout = () => {
                       <button
                         type="button"
                         className="dropdown__link"
-                        onClick={() =>
-                          signOut().then(() => setUserName("Sign In"))
-                        }
+                        onClick={() => dispatch(signOut())}
                       >
                         Sign out
                       </button>

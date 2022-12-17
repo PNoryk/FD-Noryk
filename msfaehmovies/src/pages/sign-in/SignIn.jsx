@@ -1,12 +1,12 @@
 import "./styles.scss";
 
 import { useEffect, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 import logoPath from "@/assets/logo.svg";
-import { auth, signInWithEmailAndPassword } from "@/services/firebase.js";
+import { getUserState, signIn } from "@/store/features/userSlice.js";
 
 export const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -17,31 +17,32 @@ export const SignIn = () => {
     passwordType === "password" ? AiOutlineEye : AiOutlineEyeInvisible;
   const togglePasswordType = () =>
     setPasswordType(passwordType === "password" ? "text" : "password");
-  const [user, loading] = useAuthState(auth);
-  const navigate = useNavigate();
+
+  let [user, isUserLoading] = useSelector(getUserState);
+  let navigate = useNavigate();
 
   useEffect(() => {
-    if (loading) {
+    if (isUserLoading) {
       // maybe trigger a loading screen
       return;
     }
     if (user) {
       navigate("/favorites");
     }
-  }, [user, loading]);
+  }, [user]);
+
+  let dispatch = useDispatch()
+  let handleForm = (e) => {
+    e.preventDefault();
+    dispatch(signIn({ email, password }));
+  };
 
   return (
     <div className="signin">
       <Link to={"/"} className="signin__link">
         <img className="signin__image" src={logoPath} alt="Logo" />
       </Link>
-      <form
-        className="signin__container"
-        onSubmit={(e) => {
-          e.preventDefault();
-          signInWithEmailAndPassword(email, password);
-        }}
-      >
+      <form className="signin__container" onSubmit={(e) => handleForm(e)}>
         <h1 className="signin__heading">Sign In</h1>
         <div className="signin__input-group">
           <label htmlFor="email" className="signin__label">
