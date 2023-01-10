@@ -3,35 +3,11 @@ class MoviesApi {
   #apiKey = import.meta.env.VITE_MOVIE_API_KEY;
   #cacheByPage = {};
   #cachedMovies = [];
-  #defaultS = null;
-  usersS = null;
   ITEMS_PER_PAGE = 10;
-
-  constructor() {
-    this.#updateRandomParam();
-  }
-
-  get s() {
-    return this.usersS || this.#defaultS;
-  }
-
-  #updateRandomParam() {
-    // prettier-ignore
-    const searchWords = [
-      "cat", "dog", "butterfly", "car", "bad",
-      "super", "hero", "girl", "boy", "murder",
-      "kill", "bat", "happy", "hello", "chance",
-      "clever",
-    ];
-
-    this.#defaultS =
-      searchWords[Math.floor(Math.random() * searchWords.length)];
-  }
 
   async getAll({ requestParams, signal }) {
     let newRequestParams = {
       apikey: this.#apiKey,
-      s: this.s,
       ...requestParams,
     };
     let cacheKey = [newRequestParams.s, newRequestParams.page].join("_");

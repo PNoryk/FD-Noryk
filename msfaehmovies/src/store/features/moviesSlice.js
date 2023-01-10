@@ -3,30 +3,37 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { transformMovies } from "@/services/mappers.js";
 import { api } from "@/services/movies-api.js";
 
-let initialState = {
-  entities: [],
-  favorites: [],
-  totalCount: null,
-  loading: "idle",
-  error: null,
-  currentRequestId: undefined,
-  loadedPages: [],
+let initialState = () => {
+  let state = {
+    defaultS: null,
+    s: null,
+    entities: [],
+    favorites: [],
+    totalCount: null,
+    loading: "idle",
+    error: null,
+    currentRequestId: undefined,
+  };
+  // prettier-ignore
+  const searchWords = [
+    "cat", "dog", "butterfly", "car", "bad",
+    "super", "hero", "girl", "boy", "murder",
+    "kill", "bat", "happy", "hello", "chance",
+    "clever",
+  ];
+  let randomWord = searchWords[Math.floor(Math.random() * searchWords.length)];
+  state.defaultS = randomWord;
+  return state;
 };
-
-const PAGE_HAS_BEEN_LOADED = "page-has-been-loaded";
 
 export const fetchMovies = createAsyncThunk(
   "movies/getAll",
-  async ({ s, page = 1 }, { signal, getState }) => {
-    let loadedPagesSet = new Set(getState().movies.loadedPages);
-    if (loadedPagesSet.has(page)) {
-      return Promise.reject(PAGE_HAS_BEEN_LOADED);
-    }
+  async ({ page = 1 }, { signal, getState }) => {
+    let { s, defaultS } = getState().movies;
+    s = (s || null) ?? defaultS;
 
     let promises = [];
-    let pagesToLoad = [...Array(page + 1).keys()]
-      .slice(1)
-      .filter((p) => !loadedPagesSet.has(p));
+    let pagesToLoad = [...Array(page + 1).keys()].slice(1);
     for (let p of pagesToLoad) {
       promises.push(api.getAll({ requestParams: { s, page: p }, signal }));
     }
@@ -47,35 +54,38 @@ export const fetchFavorites = createAsyncThunk(
 const moviesSlice = createSlice({
   name: "movies",
   initialState,
-  reducers: {},
+  reducers: {
+    setS(state, { payload }) {
+      state.s = payload || null;
+    },
+    clearEntities(state) {
+      state.entities = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchMovies.pending, (state, { meta }) => {
         state.loading = "pending";
         state.currentRequestId = meta.requestId;
       })
-      .addCase(fetchMovies.fulfilled, (state, { payload, meta }) => {
-        let { page } = meta.arg;
+      .addCase(fetchMovies.fulfilled, (state, { payload }) => {
         state.loading = "idle";
         state.currentRequestId = undefined;
-        state.entities.push(
-          ...transformMovies(payload.map((el) => el["Search"]).flat())
+        state.entities = transformMovies(
+          payload.map((el) => el["Search"]).flat()
         );
         state.totalCount = payload.at(-1)["totalResults"];
-        state.loadedPages = [...Array(page + 1).keys()].slice(1);
       })
       .addCase(fetchMovies.rejected, (state, { error, meta }) => {
-        let { page } = meta.arg;
         if (
           state.loading === "pending" &&
           meta.requestId === state.currentRequestId
         ) {
           state.loading = "idle";
-          if (error.message === PAGE_HAS_BEEN_LOADED) {
-            state.entities = state.entities.slice(0, page * api.ITEMS_PER_PAGE);
-            state.loadedPages = [...Array(page + 1).keys()].slice(1);
-          } else {
-            state.error = error;
+          state.error = error;
+          let isEntitiesEmpty = !state.entities.length;
+          if (isEntitiesEmpty) {
+            state.totalCount = null;
           }
         }
       })
@@ -102,8 +112,11 @@ const moviesSlice = createSlice({
 });
 
 export default moviesSlice.reducer;
+export const { clearEntities, setS } = moviesSlice.actions;
 
 export const getMovies = (store) => store.movies.entities;
+export const getMoviesS = (store) => store.movies.s;
+export const getMoviesDefaultS = (store) => store.movies.defaultS;
 export const getFavorites = (store) => store.movies.favorites;
 export const isMoviesLoading = (store) => store.movies.loading === "pending";
 export const getMoviesTotalCount = (store) => store.movies.totalCount;

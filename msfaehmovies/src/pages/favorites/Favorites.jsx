@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ToastContainer } from "react-toastify";
 
 import { Card } from "@/components/card/Card.jsx";
 import { Spinner } from "@/components/spinner/Spinner.jsx";
@@ -34,7 +33,6 @@ export const Favorites = () => {
       ) : (
         <h2 className="text-center">No movies available</h2>
       )}
-      <ToastContainer theme="dark" />
     </>
   );
 };

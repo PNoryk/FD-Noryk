@@ -1,7 +1,7 @@
 import "./styles.scss";
 
 import classNames from "classnames";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AiOutlineUser } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Outlet } from "react-router-dom";
@@ -13,18 +13,20 @@ import { ReactComponent as HomeIcon } from "@/assets/icons/Home.svg";
 import { ReactComponent as SearchIcon } from "@/assets/icons/Search.svg";
 import { ReactComponent as SettingIcon } from "@/assets/icons/Setting.svg";
 import logoPath from "@/assets/logo.svg";
-import {
-  addAllToFavorites as addAllToFavoritesAction,
-  getUserState,
-  removeAllFromFavorites as removeAllFromFavoritesAction,
-  signOut,
-} from "@/store/features/userSlice.js";
-import { toast } from "react-toastify";
-import { getMovies } from "@/store/features/moviesSlice.js";
+import { DropdownFavorites } from "@/pages/_layout/DropdownFavorites.jsx";
+import { Toasts } from "@/pages/_layout/Toasts.jsx";
+import { getMoviesS, setS } from "@/store/features/moviesSlice.js";
+import { getUserState } from "@/store/features/userSlice.js";
 
 export const Layout = () => {
   let [isSidebarOpened, setIsSidebarOpened] = useState(false);
   let [isDropDownOpened, setIsDropDownOpened] = useState(false);
+
+  let dispatch = useDispatch();
+  let moviesS = useSelector(getMoviesS);
+  let defaultValue = moviesS || "";
+  let [value, setValue] = useState(defaultValue);
+  useEffect(() => setValue(defaultValue), [moviesS]);
 
   let dropdownRef = useRef(null);
   let closeDropdown = () => setIsDropDownOpened(false);
@@ -36,35 +38,6 @@ export const Layout = () => {
     .slice(0, 2)
     .map((word) => word[0])
     .join("");
-
-  let dispatch = useDispatch();
-  let movies = useSelector(getMovies);
-
-  let addAllToFavorites = async () => {
-    await dispatch(addAllToFavoritesAction(movies.map(({ imdbId }) => imdbId)))
-    toast.success(
-      <span>
-        <b>{movies.length} movies</b> were successfully added to favorites👍
-      </span>
-    );
-  };
-
-  let removeAllFromFavorites = async () => {
-    let favorites = document.querySelector(".grid--favorites");
-    if (favorites) {
-      favorites.addEventListener("transitionend", () => {
-        dispatch(removeAllFromFavoritesAction()).then(() => {
-          toast.success(
-            <span>
-              <b>{user.favorites.length} movies</b> were successfully removed
-              from favorites🗑
-            </span>
-          );
-        });
-      });
-      favorites.classList.add("grid--hidden");
-    }
-  };
 
   return (
     <>
@@ -91,9 +64,18 @@ export const Layout = () => {
               <input
                 className="search__input"
                 placeholder="Search"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                onKeyDown={(e) =>
+                  e.key === "Enter" && dispatch(setS(e.target.value))
+                }
                 type="text"
               />
-              <button type="button" className="search__button">
+              <button
+                type="button"
+                className="search__button"
+                onClick={() => dispatch(setS(value))}
+              >
                 <span className="visually-hidden">search filter button</span>
                 <SearchIcon />
               </button>
@@ -119,37 +101,7 @@ export const Layout = () => {
                 <Arrow className="dropdown__arrow" />
               </button>
               <ul className="dropdown__menu">
-                {user && (
-                  <>
-                    <li className="dropdown__menu-item">
-                      <button
-                        type="button"
-                        className="dropdown__link"
-                        onClick={addAllToFavorites}
-                      >
-                        Add all to favorites
-                      </button>
-                    </li>
-                    <li className="dropdown__menu-item">
-                      <button
-                        type="button"
-                        className="dropdown__link"
-                        onClick={removeAllFromFavorites}
-                      >
-                        Remove all from favorites
-                      </button>
-                    </li>
-                    <li className="dropdown__menu-item">
-                      <button
-                        type="button"
-                        className="dropdown__link"
-                        onClick={() => dispatch(signOut())}
-                      >
-                        Sign out
-                      </button>
-                    </li>
-                  </>
-                )}
+                {user && <DropdownFavorites />}
                 {!user && (
                   <>
                     <li className="dropdown__menu-item">
@@ -200,6 +152,7 @@ export const Layout = () => {
           </nav>
         </aside>
       </div>
+      <Toasts />
     </>
   );
 };
